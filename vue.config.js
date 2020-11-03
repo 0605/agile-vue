@@ -26,7 +26,7 @@ module.exports = {
           enforce: true,
         },
         element: {
-          test: /[\\/]node_modules[\\/]_?element-ui(.*)/,
+          test: /[\\/]node_modules[\\/]_?element-plus(.*)/,
           name: 'element',
           priority: 20,
           enforce: true,

@@ -119,7 +119,7 @@
     <el-dialog
       append-to-body
       class="image-view-dialog"
-      :visible.sync="dialogVisible"
+      v-model:visible="dialogVisible"
       center
     >
       <img class="image-view" :src="dialogImageUrl" alt="" />
@@ -234,7 +234,7 @@ export default {
 
     await this.updateOption()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.destroyTimer()
   },
   methods: {
@@ -246,6 +246,10 @@ export default {
     },
 
     getFilename(url) {
+      if (!url) {
+        return ''
+      }
+
       if (url.length === 0) {
         return ''
       }
@@ -463,7 +467,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="less">
 .image-view-dialog {
   .el-dialog {
     width: auto;

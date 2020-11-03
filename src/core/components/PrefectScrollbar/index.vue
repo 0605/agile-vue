@@ -38,7 +38,7 @@ export default {
       this.update()
     })
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.ps.destroy()
     this.ps = null
   },
@@ -53,7 +53,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="less">
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 
 .ps-container {

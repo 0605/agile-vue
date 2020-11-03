@@ -1,8 +1,8 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import qs from 'qs'
 
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import ElementPlus from 'element-plus'
+import 'element-plus/lib/theme-chalk/index.css'
 
 import router from './router'
 import store from './store'
@@ -11,20 +11,29 @@ import App from './App.vue'
 
 import './registerServiceWorker'
 
-import HttpClient from '@core/plugins/HttpClient'
+import { createHttpClient } from '@core/plugins/HttpClient'
 import DeleteDialog from './plugins/DeleteDialog'
 import PermissionCheck from './plugins/PermissionCheck'
 
-Vue.use(ElementUI)
+const app = createApp(App)
 
-Vue.use(HttpClient, {
+app.use(ElementPlus)
+
+app.use(createHttpClient(), {
   apiHost: document
     .querySelector('meta[name="api-host"]')
     .getAttribute('content'),
   store,
-  getAccessTokenGetter: 'auth/getAccessToken',
-  setLoginActionDispatch: 'auth/setLoginAction',
-  setErrorDispatch: 'setError',
+  getAccessToken: store.getters['auth/getAccessToken'],
+  setLoginAction: async (action) => {
+    await store.dispatch('auth/setLoginAction', action)
+  },
+  setErrorMessage: async (message, historyBack) => {
+    await store.dispatch('setError', {
+      message: message,
+      historyBack: historyBack,
+    })
+  },
   paramsSerializer: function (params) {
     return qs.stringify(params, {
       arrayFormat: process.env.VUE_APP_QS_ARRAY_FORMAT || 'brackets',
@@ -32,18 +41,14 @@ Vue.use(HttpClient, {
   },
 })
 
-Vue.use(PermissionCheck, {
+app.use(PermissionCheck, {
   store,
 })
 
-Vue.use(DeleteDialog, {
-  MessageBox: ElementUI.MessageBox,
+app.use(DeleteDialog, {
+  MessageBox: ElementPlus.MessageBox,
 })
 
-Vue.config.productionTip = false
-
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount('#root')
+app.use(store)
+app.use(router)
+app.mount('#root')

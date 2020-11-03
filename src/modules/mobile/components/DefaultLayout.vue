@@ -13,4 +13,4 @@ export default {
   async beforeCreate() {},
 }
 </script>
-<style lang="scss"></style>
+<style lang="less"></style>

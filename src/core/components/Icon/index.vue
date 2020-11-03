@@ -2,7 +2,6 @@
   <i class="ag-icon">
     <svg
       viewBox="0 0 1024 1024"
-      version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
       v-html="path"
@@ -21,7 +20,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="less">
 .ag-icon {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

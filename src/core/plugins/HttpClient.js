@@ -1,34 +1,29 @@
 import Request from '../utils/request'
+import { inject } from 'vue'
 
 const UnauthorizedHttpCode = 401
 const UnprocessableEntityHttpCode = 422
 
 const HttpGetMethod = ['GET', 'HEAD']
 
+const httpClientSymbol = 'httpClient'
+
 const HttpClient = {
   install(
-    Vue,
-    {
-      apiHost,
-      store,
-      getAccessTokenGetter,
-      setLoginActionDispatch,
-      setErrorDispatch,
-      paramsSerializer = null,
+    app,
+    options = {
+      apiHost: '',
+      getAccessToken: null,
+      setLoginAction: null,
+      setErrorMessage: null,
+      paramsSerializer: null,
     }
   ) {
-    const errorMessage = (message, historyBack) => {
-      store.dispatch(setErrorDispatch, {
-        message: message,
-        historyBack: historyBack,
-      })
-    }
-
     const request = new Request({
-      baseUrl: apiHost,
-      paramsSerializer: paramsSerializer,
+      baseUrl: options.apiHost,
+      paramsSerializer: options.paramsSerializer,
       beforeRequest: (config) => {
-        const accessToken = store.getters[getAccessTokenGetter]
+        const accessToken = options.getAccessToken
 
         if (accessToken) {
           config.headers['X-Client-Id'] = accessToken.clientId
@@ -48,7 +43,7 @@ const HttpClient = {
         const historyBack = error.config.historyBack
 
         if (!error.response) {
-          errorMessage(error.message, historyBack)
+          options.setErrorMessage(error.message, historyBack)
 
           return Promise.reject(error)
         }
@@ -61,9 +56,9 @@ const HttpClient = {
               historyBack ||
               HttpGetMethod.includes(error.config.method.toUpperCase())
             ) {
-              store.dispatch(setLoginActionDispatch, 'direct')
+              options.setLoginAction('direct')
             } else {
-              store.dispatch(setLoginActionDispatch, 'modal')
+              options.setLoginAction('modal')
             }
           }
 
@@ -74,7 +69,7 @@ const HttpClient = {
           return Promise.reject(error)
         }
 
-        errorMessage(
+        options.setErrorMessage(
           error.response.data.detail ||
             error.response.data.message ||
             error.response.data.title ||
@@ -87,9 +82,15 @@ const HttpClient = {
       },
     })
 
-    Vue.http = request
-    Vue.prototype.$http = request
+    app.config.globalProperties.$http = request
+    app.provide(httpClientSymbol, request)
   },
 }
 
-export default HttpClient
+export function createHttpClient() {
+  return HttpClient
+}
+
+export function useHttpClient() {
+  return inject(httpClientSymbol)
+}

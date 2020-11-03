@@ -9,42 +9,46 @@
       :key="index"
       :to="{ path: breadcrumb.path }"
     >
-      <bp-icon v-if="breadcrumb.icon" :type="breadcrumb.icon" />
+      <ag-icon v-if="breadcrumb.icon" :type="breadcrumb.icon" />
       <span>{{ breadcrumb.title }}</span>
     </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 
 <script>
+import AgIcon from '@core/components/Icon'
+import { useRoute } from 'vue-router'
+import { onMounted, watch } from 'vue'
+
 export default {
   name: 'Breadcrumb',
-  data() {
-    return {
-      breadcrumbs: [],
-      documentTitle: '%s - ' + '管理后台',
+  components: { AgIcon },
+  setup() {
+    let breadcrumbs = []
+    const documentTitle = '%s - ' + '管理后台'
+
+    const route = useRoute()
+
+    const updateBreadcrumbs = () => {
+      const title = route.meta.title
+
+      breadcrumbs = [{ title: title }]
+
+      document.title = documentTitle.replace('%s', title)
     }
-  },
-  watch: {
-    $route() {
-      this.updateBreadcrumbs()
-    },
-  },
-  mounted() {
-    this.updateBreadcrumbs()
-  },
-  methods: {
-    updateBreadcrumbs() {
-      const title = this.$route.meta.title
 
-      this.breadcrumbs = [{ title: title }]
+    onMounted(updateBreadcrumbs)
+    watch(route, updateBreadcrumbs)
 
-      document.title = this.documentTitle.replace('%s', title)
-    },
+    return {
+      breadcrumbs,
+      documentTitle,
+    }
   },
 }
 </script>
 
-<style lang="scss">
+<style lang="less">
 .ag-breadcrumb {
   margin-bottom: 15px;
 

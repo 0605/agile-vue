@@ -1,12 +1,12 @@
-import Vue from 'vue'
+import { useHttpClient } from '@core/plugins/HttpClient'
 
 const MiscService = {
   districts(parentId) {
-    return Vue.http.get('misc/districts', { parentId: parentId }, false)
+    return useHttpClient().get('misc/districts', { parentId: parentId }, false)
   },
 
   districtPath(id) {
-    return Vue.http.get('misc/district-path', { id: id }, false)
+    return useHttpClient().get('misc/district-path', { id: id }, false)
   },
 
   districtSearchTree(keyword) {
@@ -18,19 +18,19 @@ const MiscService = {
   },
 
   adminGroups() {
-    return Vue.http.get('misc/admin-groups', null, false)
+    return useHttpClient().get('misc/admin-groups', null, false)
   },
 
   adminGroupPermissions() {
-    return Vue.http.get('misc/admin-group-permissions', null, false)
+    return useHttpClient().get('misc/admin-group-permissions', null, false)
   },
 
   shopCategoryTree() {
-    return Vue.http.get('misc/shop-category-tree', null, false)
+    return useHttpClient().get('misc/shop-category-tree', null, false)
   },
 
   shopCategoryPath(id) {
-    return Vue.http.get('misc/shop-category-path', { id: id }, false)
+    return useHttpClient().get('misc/shop-category-path', { id: id }, false)
   },
 }
 

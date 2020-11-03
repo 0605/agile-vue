@@ -28,12 +28,14 @@
 <script>
 import SiderMenuSub from './SiderMenuSub'
 import SiderMenuItem from './SiderMenuItem'
+import ELMenu from 'element-plus'
 
 export default {
   name: 'SiderMenu',
   components: {
     SiderMenuSub,
     SiderMenuItem,
+    ELMenu,
   },
   props: {
     isCollapsed: {
@@ -70,7 +72,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="less">
 .ag {
   .el-menu {
     border-right: none;
